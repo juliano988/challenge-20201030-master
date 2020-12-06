@@ -1,0 +1,31 @@
+{
+  "name": "challenge-20201030-master",
+  "version": "1.0.0",
+  "description": "Desafio proposto pela Nata.House",
+  "main": "server.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "npx nodemon",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juliano988/challenge-20201030-master.git"
+  },
+  "author": "Júlio Faria",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/juliano988/challenge-20201030-master/issues"
+  },
+  "homepage": "https://github.com/juliano988/challenge-20201030-master#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.11.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
