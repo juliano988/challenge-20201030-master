@@ -8,10 +8,94 @@ body{
 
 #main-div{
     height: 95vh;
-    border-style: solid;
+}
+
+#cabecalho-tabela{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    border-style: solid solid none solid;
+}
+
+#titulo-tabela{
+    width: 100%;
+    border-bottom-style: solid;
+}
+
+#label-imagem-tabela{
+    flex-basis: 150px;
+}
+
+#label-nome-tabela{
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #janela-consulta{
-    height: 50%;
-    border-style: solid;
+    height: 60%;
+    overflow-y: scroll;
+    border-style: solid solid solid solid;
+}
+
+#tabela-consulta{
+    display: flex;
+    flex-direction: column;
+}
+
+#tabela-consulta td{
+    height: 120px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#tabela-consulta tr:hover{
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#tabela-consulta tr td:first-child{
+    width: 150px;
+}
+
+#tabela-consulta tr td:nth-child(2){
+    text-align: justify;
+    padding-right: 10px;
+}
+
+#tabela-consulta tr:nth-child(even){
+    background-color: salmon;
+}
+
+#tabela-consulta img{
+    max-height: 100px;
+    max-width: 100px;
+}
+
+#selecionar-pagina{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-style: none solid solid solid;
+}
+
+#label-pagina{
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#input-pagina{
+    width: 100%;
+}
+
+#buscar-pagina-btn{
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#imagem-alimento-modal{
+    max-height: 150px;
+    max-width: 150px;
+    margin: 5px;
 }

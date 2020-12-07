@@ -8,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="w3-modal.css">
     <link rel="stylesheet" href="styles.css">
 
     <title>Hello, world!</title>
@@ -17,12 +18,115 @@
     <div id="main-div" class="container">
         <h1>Fitness Foods LC</h1>
         <h5>Serviço de consulta nutricional</h5>
+        <div id="cabecalho-tabela">
+            <h5 id="titulo-tabela">Tabela de Produtos</h5>
+            <h6 id="label-imagem-tabela">Imagem</h6>
+            <h6 id="label-nome-tabela">Nome</h6>
+        </div>
         <div id="janela-consulta">
+            <table id="tabela-consulta"></table>
+        </div>
+        <div id="selecionar-pagina">
+            <label id="label-pagina">Pagina:</label>
+            <button id="buscar-pagina-btn" type="button" onclick="trocarPagina()">Buscar</button>
+        </div>
+    </div>
 
+    <!-- Modal -->
+    <div id="id01" class="w3-modal">
+        <div class="w3-modal-content w3-animate-left">
+            <header class="w3-container w3-teal">
+                <span onclick="document.getElementById('id01').style.display='none'"
+                    class="w3-button w3-display-topright">&times;</span>
+                <h2 id="modal-header">Modal Header</h2>
+            </header>
+            <div class="w3-container">
+                <img id="imagem-alimento-modal">
+                <p><b>Codigo de barras:</b></p>
+                <p id="modal-barcode"></p>
+                <p><b>Status:</b></p>
+                <p id="modal-status"></p>
+                <p><b>Paking:</b></p>
+                <p id="modal-packaging"></p>
+                <p><b>Brands:</b></p>
+                <p id="modal-brands"></p>
+                <p><b>Store:</b></p>
+                <p id="modal-store"></p>
+            </div>
         </div>
     </div>
 
     <!-- Scripts -->
+    <script>
+        let totalPaginas;
+
+        var requestURL = '/products/?p=1';
+        var request = new XMLHttpRequest();
+        request.open('GET', requestURL);
+        request.responseType = 'json';
+        request.send();
+        request.onload = function () {
+            totalPaginas = request.response.total_paginas;
+            for (const i in request.response.resultados) {
+                document.getElementById('tabela-consulta').appendChild(document.createElement('tr'));
+                document.getElementById('tabela-consulta').children[Number(i)].setAttribute('id', 'linha-' + Number(i));
+                document.getElementById('linha-' + Number(i)).appendChild(document.createElement('td'));
+                document.getElementById('linha-' + Number(i)).appendChild(document.createElement('td'));
+                document.getElementById('linha-' + Number(i)).children[0].setAttribute('id', 'col-' + Number(i) + '0');
+                document.getElementById('linha-' + Number(i)).children[1].setAttribute('id', 'col-' + Number(i) + '1');
+                document.getElementById('col-' + Number(i) + '0').appendChild(document.createElement('img'));
+                document.getElementById('col-' + Number(i) + '1').appendChild(document.createElement('p'));
+                document.getElementById('col-' + Number(i) + '0').children[0].setAttribute('id', 'foto-' + Number(i));
+                document.getElementById('col-' + Number(i) + '1').children[0].setAttribute('id', 'link-' + Number(i));
+                document.getElementById('foto-' + Number(i)).setAttribute('src', request.response.resultados[Number(i)].image_url);
+                document.getElementById('foto-' + Number(i)).setAttribute('alt', request.response.resultados[Number(i)].product_name);
+                document.getElementById('link-' + Number(i)).innerHTML = request.response.resultados[Number(i)].product_name;
+                //Para o modal funcionar
+                document.getElementById('linha-' + Number(i)).setAttribute('onclick', "abrirModal("+ JSON.stringify(request.response.resultados[Number(i)]) +")");
+            }
+            document.getElementById('selecionar-pagina').insertBefore(document.createElement('input'), document.getElementById('buscar-pagina-btn'));
+            document.getElementById('selecionar-pagina').children[1].setAttribute('id', 'input-pagina');
+            document.getElementById('input-pagina').setAttribute('type', 'number');
+            document.getElementById('input-pagina').setAttribute('placeholder', totalPaginas + ' páginas');
+        };
+
+        function trocarPagina() {
+            if (document.getElementById('input-pagina').value >= 1 && document.getElementById('input-pagina').value <= totalPaginas) {
+                document.getElementById('buscar-pagina-btn').setAttribute('disabled', null);
+                var requestURL = '/products/?p=' + document.getElementById('input-pagina').value;
+                var request = new XMLHttpRequest();
+                request.open('GET', requestURL);
+                request.responseType = 'json';
+                request.send();
+                request.onload = function () {
+                    for (const i in request.response.resultados) {
+                        document.getElementById('foto-' + Number(i)).setAttribute('src', request.response.resultados[Number(i)].image_url);
+                        document.getElementById('foto-' + Number(i)).setAttribute('alt', request.response.resultados[Number(i)].product_name);
+                        document.getElementById('link-' + Number(i)).innerHTML = request.response.resultados[Number(i)].product_name;
+                        //Atualizar modal
+                        document.getElementById('linha-' + Number(i)).setAttribute('onclick', "abrirModal("+ JSON.stringify(request.response.resultados[Number(i)]) +")");
+                    }
+                    document.getElementById('buscar-pagina-btn').removeAttribute('disabled');
+                }
+            } else {
+                alert('Página desejada não existe. Favor escolher um valor entre 1 e ' + totalPaginas);
+            }
+        }
+
+        function abrirModal(){
+            document.getElementById('modal-header').innerHTML = arguments[0].product_name;
+            document.getElementById('imagem-alimento-modal').setAttribute('src',arguments[0].image_url);
+            document.getElementById('imagem-alimento-modal').setAttribute('alt',arguments[0].product_name);
+            document.getElementById('modal-barcode').innerHTML = arguments[0].barcode;
+            document.getElementById('modal-status').innerHTML = arguments[0].status;
+            document.getElementById('modal-packaging').innerHTML = arguments[0].packaging || "Não disponível";
+            document.getElementById('modal-brands').innerHTML = arguments[0].brands || "Não disponível";
+            document.getElementById('modal-store').innerHTML = arguments[0].store || "Não disponível";
+            document.getElementById('id01').style.display='block';
+        }
+
+    </script>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
