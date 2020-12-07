@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-var methodOverride = require('method-override');
 const app = express();
 const mongoose = require('mongoose');
 mongoose.connect(process.env.URI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -27,11 +26,47 @@ db.once('open', function () {
 
     app.use(express.static('public'));
 
-    // override with the X-HTTP-Method-Override header in the request
-    app.use(methodOverride('X-HTTP-Method-Override'))
-
     app.get('/', (req, res) => {
         res.status(200).send('Fullstack Challenge 20201030');
+    });
+
+    app.put('/products/:code', function (req, res) {
+        if (req.query.product_name || req.query.quantity || req.query.quantity || req.query.categories || req.query.packaging || req.query.brands || req.query.image_url) {
+            AlimentosNovo.findOne({ code: req.params.code }, function (err, data) {
+                if (err) { return console.log(err) };
+                if (data) {
+                    const dadoAntigo = data;
+                    AlimentosNovo.findOneAndUpdate({ code: req.params.code }, {
+                        product_name: req.query.product_name || dadoAntigo.product_name,
+                        quantity: req.query.quantity || dadoAntigo.quantity,
+                        categories: req.query.categories || dadoAntigo.categories,
+                        packaging: req.query.packaging || dadoAntigo.packaging,
+                        brands: req.query.brands || dadoAntigo.brands,
+                        image_url: req.query.image_url || dadoAntigo.image_url
+                    }, { new: true }).select('-_id').exec(function (err, data) {
+                        if (err) { return console.log(err) };
+                        res.json({ mensagem: "Dados atualizados com sucesso!", alimento_atualizado: data })
+                    });
+                } else {
+                    res.json('Produto não encontrado ou código incorreto');
+                };
+            });
+        } else {
+            res.json('Nenhum parâmetro foi inserido para atualização ou parâmetro inserido é invalido.');
+        };
+    });
+
+    app.delete('/products/:code', function (req, res) {
+        AlimentosNovo.findOneAndUpdate({ code: req.params.code }, {
+            status: 'trash'
+        }, { new: true }).select('-_id').exec(function (err, data) {
+            if (err) { return console.log(err) };
+            if (data) {
+                res.json({ mensagem: "Status do alimento alterado com sucesso!", alimento_atualizado: data })
+            } else {
+                res.json('Produto não encontrado ou código incorreto');
+            }
+        });
     });
 
     app.get('/products/:code', function (req, res) {
