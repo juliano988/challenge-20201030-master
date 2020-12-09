@@ -15,9 +15,14 @@
 </head>
 
 <body>
+    <div id="loading-div">
+        <div class="spinner-border text-success" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
     <div id="main-div" class="container">
-        <h1>Fitness Foods LC</h1>
-        <h5>Serviço de consulta nutricional</h5>
+        <h1 id="titulo">Fitness Foods LC</h1>
+        <h5 id="sub-titulo">Serviço de consulta nutricional</h5>
         <div id="cabecalho-tabela">
             <h5 id="titulo-tabela">Tabela de Produtos</h5>
             <h6 id="label-imagem-tabela">Imagem</h6>
@@ -26,10 +31,11 @@
         <div id="janela-consulta">
             <table id="tabela-consulta"></table>
         </div>
-        <div id="selecionar-pagina">
+        <form id="selecionar-pagina">
             <label id="label-pagina">Pagina:</label>
-            <button id="buscar-pagina-btn" type="button" onclick="trocarPagina()">Buscar</button>
-        </div>
+            <button id="buscar-pagina-btn" type="submit" onclick="trocarPagina()"
+                class="btn btn-success">Buscar</button>
+        </form>
     </div>
 
     <!-- Modal -->
@@ -59,7 +65,6 @@
     <!-- Scripts -->
     <script>
         let totalPaginas;
-
         var requestURL = '/products/?p=1';
         var request = new XMLHttpRequest();
         request.open('GET', requestURL);
@@ -82,7 +87,9 @@
                 document.getElementById('foto-' + Number(i)).setAttribute('alt', request.response.resultados[Number(i)].product_name);
                 document.getElementById('link-' + Number(i)).innerHTML = request.response.resultados[Number(i)].product_name;
                 //Para o modal funcionar
-                document.getElementById('linha-' + Number(i)).setAttribute('onclick', "abrirModal("+ JSON.stringify(request.response.resultados[Number(i)]) +")");
+                document.getElementById('linha-' + Number(i)).setAttribute('onclick', "abrirModal(" + JSON.stringify(request.response.resultados[Number(i)]) + ")");
+                //Janela de carregar
+                document.getElementById('loading-div').setAttribute('style','display: none');
             }
             document.getElementById('selecionar-pagina').insertBefore(document.createElement('input'), document.getElementById('buscar-pagina-btn'));
             document.getElementById('selecionar-pagina').children[1].setAttribute('id', 'input-pagina');
@@ -91,6 +98,9 @@
         };
 
         function trocarPagina() {
+            //Janela de carregar
+            document.getElementById('loading-div').setAttribute('style','display: flex');
+
             if (document.getElementById('input-pagina').value >= 1 && document.getElementById('input-pagina').value <= totalPaginas) {
                 document.getElementById('buscar-pagina-btn').setAttribute('disabled', null);
                 var requestURL = '/products/?p=' + document.getElementById('input-pagina').value;
@@ -104,25 +114,27 @@
                         document.getElementById('foto-' + Number(i)).setAttribute('alt', request.response.resultados[Number(i)].product_name);
                         document.getElementById('link-' + Number(i)).innerHTML = request.response.resultados[Number(i)].product_name;
                         //Atualizar modal
-                        document.getElementById('linha-' + Number(i)).setAttribute('onclick', "abrirModal("+ JSON.stringify(request.response.resultados[Number(i)]) +")");
+                        document.getElementById('linha-' + Number(i)).setAttribute('onclick', "abrirModal(" + JSON.stringify(request.response.resultados[Number(i)]) + ")");
                     }
                     document.getElementById('buscar-pagina-btn').removeAttribute('disabled');
+                    //Janela de carregar
+                    document.getElementById('loading-div').setAttribute('style','display: none');
                 }
             } else {
                 alert('Página desejada não existe. Favor escolher um valor entre 1 e ' + totalPaginas);
             }
         }
 
-        function abrirModal(){
+        function abrirModal() {
             document.getElementById('modal-header').innerHTML = arguments[0].product_name;
-            document.getElementById('imagem-alimento-modal').setAttribute('src',arguments[0].image_url);
-            document.getElementById('imagem-alimento-modal').setAttribute('alt',arguments[0].product_name);
+            document.getElementById('imagem-alimento-modal').setAttribute('src', arguments[0].image_url);
+            document.getElementById('imagem-alimento-modal').setAttribute('alt', arguments[0].product_name);
             document.getElementById('modal-barcode').innerHTML = arguments[0].barcode;
             document.getElementById('modal-status').innerHTML = arguments[0].status;
             document.getElementById('modal-packaging').innerHTML = arguments[0].packaging || "Não disponível";
             document.getElementById('modal-brands').innerHTML = arguments[0].brands || "Não disponível";
             document.getElementById('modal-store').innerHTML = arguments[0].store || "Não disponível";
-            document.getElementById('id01').style.display='block';
+            document.getElementById('id01').style.display = 'block';
         }
 
     </script>

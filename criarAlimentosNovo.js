@@ -23,7 +23,7 @@ db.once('open', function () {
     const Alimentos = mongoose.model('Alimentos', alimentosSchema);
     const AlimentosNovo = mongoose.model('Alimentos-novo', alimentosSchema);
 
-    Alimentos.find({}).select('code product_name quantity categories packaging brands images').exec(function (err, data) {
+    Alimentos.find({}).select('code product_name quantity categories packaging brands images').skip(3 * 10000).limit(10000).exec(function (err, data) {
         if (err) { return console.log(err) };
 
         const alimentosSelecionados = data;

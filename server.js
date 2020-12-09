@@ -83,7 +83,7 @@ db.once('open', function () {
     app.get('/products', function (req, res) {
         if (req.query.p) {
             const pagina = req.query.p;
-            const resultadosPorPagina = 10;
+            const resultadosPorPagina = 20;
             let qDocumentos;
             AlimentosNovo.countDocuments({}, function (err, data) {
                 if (err) { return console.log(err) };
