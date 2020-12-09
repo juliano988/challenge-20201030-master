@@ -31,7 +31,7 @@ db.once('open', function () {
     });
 
     app.put('/products/:code', function (req, res) {
-        if (req.query.product_name || req.query.quantity || req.query.quantity || req.query.categories || req.query.packaging || req.query.brands || req.query.image_url) {
+        if (req.query.product_name || req.query.quantity || req.query.categories || req.query.packaging || req.query.brands || req.query.image_url) {
             AlimentosNovo.findOne({ code: req.params.code }, function (err, data) {
                 if (err) { return console.log(err) };
                 if (data) {

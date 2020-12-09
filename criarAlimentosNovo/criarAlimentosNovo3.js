@@ -1,6 +1,11 @@
+//Constantes
+const tempoExecucao_ms = 900000; //15 minutos
+const numDaExecução = 3;
+const docsExecutadosporVez = 10000;
+
 require('dotenv').config();
 const mongoose = require('mongoose');
-mongoose.connect(process.env.URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb+srv://julio123:julio123@cluster0.ab00a.mongodb.net/Nata_House_Desafio?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -20,10 +25,13 @@ db.once('open', function () {
         image_url: String
     });
 
+    //Terminar execução do programa
+    setTimeout(function(){ throw new Error("Codigo executado!")},tempoExecucao_ms)
+
     const Alimentos = mongoose.model('Alimentos', alimentosSchema);
     const AlimentosNovo = mongoose.model('Alimentos-novo', alimentosSchema);
 
-    Alimentos.find({}).select('code product_name quantity categories packaging brands images').skip(3 * 10000).limit(10000).exec(function (err, data) {
+    Alimentos.find({}).select('code product_name quantity categories packaging brands images').skip((numDaExecução - 1) * docsExecutadosporVez).limit(docsExecutadosporVez).exec(function (err, data) {
         if (err) { return console.log(err) };
 
         const alimentosSelecionados = data;
