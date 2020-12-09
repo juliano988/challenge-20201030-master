@@ -1,5 +1,5 @@
 @REM INSERIR NA LINHA ABAIXO "cd" E O DIRETORIO ONDE O PROJETO FOI SALVO
-cd C:\Users\julio\projetos\challenge-20201030-master\criarAlimentosNovo
+cd << DIRETÓRIO DO PROJETO >>
 cls
 
 @REM DELAY INSERIDO DE 1MIN

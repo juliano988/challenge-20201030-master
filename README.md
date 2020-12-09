@@ -1,111 +1,101 @@
-# Fullstack Challenge 20201030
+## API de alteração e consulta a base de dados alimentar - Fullstack Challenge 20201030
+***
 
+### Descrição
 
-## Introdução
+API desenvolvida com o objetivo de criar uma base de dados alimentar personalizada com base nos dados disponibilizados pela [Open Food Facts](https://br.openfoodfacts.org/data), e com isso realizar alterações e consultas na mesma.
 
-Nesse desafio trabalharemos no desenvolvimento de uma REST API que utilizará os dados do projeto Open Food Facts, um banco de dados aberto com informação nutricional de diversos produtos alimentícios.
+Desafio proposto pela [nata.house](https://natahouse.com/).
 
-O projeto tem como objetivo dar suporte a equipe de nutricionistas da empresa Fitness Foods LC para que possam comparar de maneira rápida a informação nutricional dos alimentos da base do Open Food Facts.
+### Requisitos
 
-### Obrigatório
+Para a instalação desta API, o usuário precisará:
 
-- Trabalhar em um FORK deste repositório em seu usuário;
-- O projeto back-end deverá ser desenvolvido usando em NodeJs ou Linguagem de preferência;
-- O projeto front-end deverá ser desenvolvido usando em ReactJs ou Framework de preferência;
-- Documentação para configuração do projeto em ambientes de produção (como instalar, rodar e referências a libs usadas);
+- Sistema operacional Windows;
+- NodeJs;
+- MongoDB;
 
+### Instalação
 
-## O projeto
+O processo de instalação consiste em duas etapas:
 
-- Criar um banco de dados MongoDB usando Atlas: https://www.mongodb.com/cloud/atlas ou algum Banco de Dados SQL se não sentir confortável com NoSQL;
-- Criar uma REST API com as melhores práticas de desenvolvimento.
-- Criar uma versão Web para listar os produtos
-- Recomendável usar Drivers oficiais para integração com o DB
+1. Extração dos alimentos da base de dados do [Open Food Facts](https://br.openfoodfacts.org/data) e importa-los para uma base de dados pessoal.
 
-### Modelo de Dados:
+2. Criação de uma nova coleção no banco de dados com as propriedades dos alimentos selecionadas e customizadas.
 
-Para a definição do modelo, consultar o arquivo [products.json](./products.json) que foi exportado do Open Food Facts, um detalhe importante é que temos dois campos personalizados para poder fazer o controle interno do sistema e que deverão ser aplicados em todos os alimentos no momento da importação, os campos são:
+Ambas as etapas serão feitas através de arquivos *.bat* que poderão ser executados periodicamente com o auxílio de um agendador de tarefas.
 
-- `imported_t`: campo do tipo Date com a dia e hora que foi importado;
-- `status`: campo do tipo Enum com os possíveis valores draft, `trash` e `published`;
+É recomendado o uso do Agendador de Tarefas do Windows.
 
-### Sistema do CRON
+#### Extração dos alimentos
 
-Para prosseguir com o desafio, precisaremos criar na API um sistema de atualização que vai importar os dados para a Base de Dados com a versão mais recente do [Open Food Facts](https://br.openfoodfacts.org/data) uma vez ao día. Adicionar aos arquivos de configuração o melhor horário para executar a importação.
+1. Antes de executar, abra de forma editável o arquivo *baixar_dbs.bat*, que se encontra na raiz do diretório.
 
-A lista de arquivos do Open Food, pode ser encontrada em: 
+2. Na linha 4, altere o seguinte campo:
 
-- https://static.openfoodfacts.org/data/delta/index.txt
+>* **<< DIRETÓRIO DO PROJETO >>** : Local onde a API foi salva;
 
-Onde cada linha representa um arquivo que está disponível em https://static.openfoodfacts.org/data/delta/{filename}. O nome do arquivo contém o timestamp UNIX da primeira e última alteração contida no arquivo JSON, para que os arquivos possam ser importados (após extracção) ordenados.
+3. Na etapa 8, ou linha 54, altere os seguintes campos:
 
-É recomendável utilizar uma Collection secundária para controlar os históricos das importações e facilitar a validação durante a execução.
+>* **<< URI DE ACESSO AO BANCO DE DADOS >>** : Neste espaço você deve inserir a URI de acesso ao banco de dados pessoal mongodb para o funcionamento desta API;
+>* **<< INSERIR COLEÇÃO >>** : Inserir o nome da coleção onde serão armazenados os documentos extraídos da base de dados do [Open Food Facts](https://br.openfoodfacts.org/data);
 
-Nota: Importante lembrar que todos os dados deverão ter os campos personalizados `imported_t` e `status`.
+Feito isso, o arquivo já pode ser executado.
 
-### A REST API
+Espere a finalização da execução do programa antes de dar prosseguimento a instalação.
 
-Na REST API teremos os seguintes endpoints:
+#### Criação da nova coleção
 
-- `GET /`: Retornar um Status: 200 e uma Mensagem "Fullstack Challenge 20201030"
-- `PUT /products/:code`: Será responsável por receber atualizações do Projeto Web
-- `DELETE /products/:code`: Mudar o status do produto para `trash`
-- `GET /products/:code`: Obter a informação somente de um produto da base de dados
-- `GET /products`: Listar todos os produtos da base de dados, adicionar sistema de paginação para não sobrecarregar o `REQUEST`.
+1. Antes de executar, abra de forma editável o arquivo *preencherAlimentosNovo.bat*, que se encontra na raiz do diretório;
 
-#### Extras
+2. Na linha 2, altere o seguinte campo:
 
-- **Diferencial 1** Configurar um sistema de alerta se tem algum falho durante o Sync dos produtos;
-- **Diferencial 2** Descrever a documentação da API utilizando o conceito de Open API 3.0;
-- **Diferencial 3** Escrever Unit Tests para os endpoints da API;
-- **Diferencial 4** Configurar Docker no Projeto para facilitar o Deploy da equipe de DevOps;
-- **Diferencial 5** Escrever um esquema de segurança aplicado nos endpoints (Api Key ou JWT)
+>* **<< DIRETÓRIO DO PROJETO >>** : Local onde a API foi salva;
 
-### Front End
+3 - Na pasta *criarAlimentosNovo*, abra de forma editável o arquivo criarAlimentosNovo1.js;
 
-Desenvolver um projeto em ReactJs ou técnologia de preferência para listar os produtos com a seguinte informação:
+>Durante a execução deste código, o seguinte erro pode ocorrer:
 
-- Imagem
-- Nome
+>``
+>FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
+>``
 
-Ao clicar nos produtos, expandiremos a informação utilizando um modal com os dados:
+>Este erro é causado pela quantidade muito grande de promessas que o compilador precisa executar, ocupando muito espaço na memória *RAM* da máquina e forçando o JavaScript a terminar a execução do código.
 
-- Barcode
-- Status
-- Packaging
-- Brands
-- Store
+>Para evitar esse problema, a execução deste código foi dividia em partes.
 
-#### Extras
+>Nas primeiras linhas do arquivo temos:
 
-- **Diferencial 1** Adicionar fluxo de editar os dados do produto;
-- **Diferencial 2** Adicionar fluxo para deletar produtos;
-- **Diferencial 3** Adicionar um sistema de comparação entre os produtos;
-- **Diferencial 4** Escrever Unit Tests para os componentes do projeto;
+>```
+>//Constantes
+>const tempoExecucao_ms = 900000; //15 minutos
+>const numDaExecução = 1;
+>const docsExecutadosporVez = 10000;
+>
+>const URI_DB = 'INSERIR AQUI A URI DE ACESO AO >BANCO DE DADOS'
+>```
 
+>Onde:
 
-## Readme do Repositório
+>* ***tempoExecucao_ms***: é o tempo em milissegundos em que o código será executado.
+>* ***numDaExecução***: a ordem de execução deste código.
+>* ***docsExecutadosporVez***: número de documentos que serão salvos por execução no banco de dados pessoal.
+>* **URI_DB**: A URI de acesso ao banco de dados.</br>
+>>*obs.: Como este código será executado somente de forma local, não há perigo em expor a URI.*
 
-- Deve conter o título de cada projeto
-- Uma descrição de uma frase
-- Como instalar e usar o projeto (instruções)
-- Não esqueça o [.gitignore](https://www.toptal.com/developers/gitignore)
+>Caso considere necessário, fiquei a vontade para modificar estes parâmetros em todos os arquivos da pasta *criarAlimentosNovo* e o arquivo *preencherAlimentosNovo.bat*
 
-## Finalização
+Feito isso, o arquivo *preencherAlimentosNovo.bat* já pode ser executado.
 
-Avisar sobre a finalização e enviar para correção em: [https://coodesh.com/review-challenge](https://bit.ly/3e7MjcK)
-Após essa etapa será marcado a apresentação/correção do projeto.
+### Utilização
 
-## Instruções para a Apresentação:
+É possível interagir com a API das seguintes formas:
 
-1. Será necessário compartilhar a tela durante a vídeo chamada;
-2. Deixe todos os projetos de solução previamente abertos em seu computador antes de iniciar a chamada;
-3. Deixe os ambientes configurados e prontos para rodar;
-4. Prepara-se pois você será questionado sobre cada etapa e decisão do Challenge;
-5. Prepare uma lista de perguntas, dúvidas, sugestões de melhorias e feedbacks (caso tenha).
+* **GET /**: Retorna a mensagem: *Fullstack Challenge 20201030*;
+* **PUT /products/:code/?{product_name}&{quantity}&{categories}&{packaging}&{brands}&{image_url}**: Atualiza os parâmetros de um determinado produto identificado pelo campo ***code***;
+* **DELETE /products/:code**: Altera o *status* de um produto para *trash*;
+* **GET /products/:code**: Obter as informações de um determinado produto identificado pelo ***code***;
+* **GET /products/?{p}**: Obter as informações de todos os produtos contidos na base de dados ou exibir os resultados por paginas através do parametro ***p***, que recebe um numero inteiro como valor;
+* **GET /consulta**: Acesso ao *front-end* da API;
 
-
-## Suporte
-
-Use o nosso canal no slack: http://bit.ly/32CuOMy para tirar dúvidas sobre o processo ou envie um e-mail para contato@coodesh.com.
-
+> *obs.: Os parametros delimitados por "{}" são opcionais.*

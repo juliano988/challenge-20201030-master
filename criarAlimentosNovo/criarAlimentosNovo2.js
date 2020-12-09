@@ -3,9 +3,11 @@ const tempoExecucao_ms = 900000; //15 minutos
 const numDaExecução = 2;
 const docsExecutadosporVez = 10000;
 
+const URI_DB = 'INSERIR AQUI A URI DE ACESO AO BANCO DE DADOS'
+
 require('dotenv').config();
 const mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://julio123:julio123@cluster0.ab00a.mongodb.net/Nata_House_Desafio?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(URI_DB, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));

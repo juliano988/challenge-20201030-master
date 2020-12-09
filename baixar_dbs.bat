@@ -1,5 +1,7 @@
-@REM INSERIR NA LINHA ABAIXO "cd" E O DIRETORIO ONDE O PROJETO FOI SALVO
-cd C:\Users\julio\projetos\challenge-20201030-master
+@REM ISERIR URI DE ACESSO AO BANCO DE DADOS E DEMAIS INFORMAÇÕES NA ETAPA 8
+
+@REM INSERIR NA LINHA ABAIXO "cd" E O DIRETÓRIO ONDE O PROJETO FOI SALVO
+cd << DIRETÓRIO DO PROJETO >>
 cls
 
 @echo off
@@ -43,11 +45,13 @@ for /R "off_arquivos\arquivos_db" %%I in ("*.gz") do (
 )
 cls
 
+@REM ALTERAR A URI ABAIXO
+
 ECHO 8 - GERANDO COMANDOS PARA IMPORTAÇÃO DOS DADOS DO BANCO ORIGINAL PARA O DA API=====================
 setLocal EnableDelayedExpansion
 for /f "tokens=* delims= " %%a in (off_arquivos\temp\index.txt) do (
 set N+=1
-echo .\off_arquivos\mongoimport.exe --uri mongodb+srv://julio123:julio123@cluster0.ab00a.mongodb.net/Nata_House_Desafio --collection alimentos --type json --file off_arquivos\arquivos_db\%%a >>off_arquivos\temp\update_db.txt
+echo .\off_arquivos\mongoimport.exe --uri << URI DE ACESSO AO BANCO DE DADOS >> --collection << INSERIR COLEÇÃO >> --type json --file off_arquivos\arquivos_db\%%a >>off_arquivos\temp\update_db.txt
 )
 cls
 
