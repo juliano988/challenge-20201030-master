@@ -38,7 +38,6 @@ Ambas as etapas serão feitas através de arquivos *.bat* que poderão ser execu
 3. Na etapa 8, ou linha 54, altere os seguintes campos:
 
 >* **<< URI DE ACESSO AO BANCO DE DADOS >>** : Neste espaço você deve inserir a URI de acesso ao banco de dados pessoal mongodb para o funcionamento desta API;
->* **<< INSERIR COLEÇÃO >>** : Inserir o nome da coleção onde serão armazenados os documentos extraídos da base de dados do [Open Food Facts](https://br.openfoodfacts.org/data);
 
 Feito isso, o arquivo já pode ser executado.
 

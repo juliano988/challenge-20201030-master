@@ -51,7 +51,7 @@ ECHO 8 - GERANDO COMANDOS PARA IMPORTAÇÃO DOS DADOS DO BANCO ORIGINAL PARA O D
 setLocal EnableDelayedExpansion
 for /f "tokens=* delims= " %%a in (off_arquivos\temp\index.txt) do (
 set N+=1
-echo .\off_arquivos\mongoimport.exe --uri << URI DE ACESSO AO BANCO DE DADOS >> --collection << INSERIR COLEÇÃO >> --type json --file off_arquivos\arquivos_db\%%a >>off_arquivos\temp\update_db.txt
+echo .\off_arquivos\mongoimport.exe --uri << URI DE ACESSO AO BANCO DE DADOS >> --collection Alimentos --type json --file off_arquivos\arquivos_db\%%a >>off_arquivos\temp\update_db.txt
 )
 cls
 
