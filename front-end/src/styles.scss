@@ -1,0 +1,178 @@
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+
+html{
+    overflow: hidden;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    background-color: #fcf6c3;
+    overflow: hidden;
+}
+
+#loading-div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    z-index: 5;
+    height: 100vh;
+    width: 100vw;
+    transform: scale(2);
+    background-color: rgba(148, 148, 148, 0.5);
+    overflow: hidden;
+}
+
+#loading-div div{
+    @extend .spinner-border;
+    @extend .text-success;
+}
+
+#loading-div div span{
+    @extend .sr-only;
+}
+
+#main-div{
+    @extend .container;
+    height: 95vh;
+}
+
+#titulo , #sub-titulo{
+    color: #5C8001;
+}
+
+#cabecalho-tabela{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 5.3rem;
+    background-color: #d0e4ad;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+#cabecalho-tabela *{
+    font-size: 1.3rem;
+}
+
+#titulo-tabela{
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 0px;
+    font-weight: bold;
+    border-bottom-style: solid;
+    border-color: #fcf6c3;
+}
+
+#label-imagem-tabela{
+    flex-basis: 150px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#label-nome-tabela{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#janela-consulta{
+    height: 65%;
+    overflow-y: scroll;
+    background-color: #d0e4ad;
+}
+
+#tabela-consulta{
+    display: flex;
+    flex-direction: column;
+    font-size: 1.1rem;
+}
+
+#tabela-consulta td{
+    height: 120px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#tabela-consulta tr:hover{
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#tabela-consulta tr td:first-child{
+    width: 150px;
+}
+
+#tabela-consulta tr td:nth-child(2){
+    text-align: justify;
+    padding-right: 10px;
+
+}
+
+#tabela-consulta tr:nth-child(odd){
+    color: #555f42;
+}
+
+#tabela-consulta tr:nth-child(even){
+    color: #77713c;
+    background-color: #fcf6c3;
+}
+
+#tabela-consulta img{
+    max-height: 100px;
+    max-width: 100px;
+}
+
+#selecionar-pagina{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #d0e4ad;
+    border-top-style: solid;
+    border-color: #fcf6c3;
+    border-radius: 5px;
+}
+
+#selecionar-pagina *{
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#input-pagina{
+    width: 100%;
+    height: 2rem;
+}
+
+#buscar-pagina-btn{
+    @extend .btn;
+    @extend .btn-success;
+    display: flex;
+    align-items: center;
+    height: 2rem;
+}
+
+#imagem-alimento-modal{
+    max-height: 150px;
+    max-width: 150px;
+    margin: 5px;
+}
+
+@media (max-width: 575.98px) {
+    #label-imagem-tabela , #label-nome-tabela{
+        display: none;
+    }
+    #janela-consulta{
+        height: 70%;
+    }
+}

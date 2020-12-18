@@ -1,4 +1,5 @@
 require('dotenv').config();
+var cors = require('cors');
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
@@ -25,6 +26,9 @@ db.once('open', function () {
     const AlimentosNovo = mongoose.model('Alimentos-novo', alimentosSchema);
 
     app.use(express.static('public'));
+
+    //Enable  CORS
+    app.use(cors())
 
     app.get('/', (req, res) => {
         res.status(200).send('Fullstack Challenge 20201030');
@@ -105,8 +109,8 @@ db.once('open', function () {
         res.sendFile(__dirname + '/project/index.html');
     });
 
-    app.listen(3000, () => {
-        console.log(`Example app listening at http://localhost:3000`);
+    app.listen(8080, () => {
+        console.log(`Example app listening at http://localhost:8080`);
     });
 
 });
