@@ -105,10 +105,6 @@ db.once('open', function () {
         };
     });
 
-    app.get('/consulta', (req, res) => {
-        res.sendFile(__dirname + '/project/index.html');
-    });
-
     app.listen(8080, () => {
         console.log(`Example app listening at http://localhost:8080`);
     });

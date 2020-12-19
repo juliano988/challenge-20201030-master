@@ -1,17 +1,12 @@
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 
-html{
-    overflow: hidden;
-}
-
-body{
+#app{
     display: flex;
     flex-direction: column;
     justify-content: center;
     height: 100vh;
     text-align: center;
     background-color: #fcf6c3;
-    overflow: hidden;
 }
 
 #loading-div{
@@ -20,16 +15,16 @@ body{
     align-items: center;
     position: absolute;
     z-index: 5;
-    height: 100vh;
+    height: 100%;
     width: 100vw;
-    transform: scale(2);
     background-color: rgba(148, 148, 148, 0.5);
-    overflow: hidden;
 }
 
 #loading-div div{
     @extend .spinner-border;
     @extend .text-success;
+    width: 4rem;
+    height: 4rem;
 }
 
 #loading-div div span{
@@ -95,37 +90,48 @@ body{
     font-size: 1.1rem;
 }
 
-#tabela-consulta td{
+//Apenas por questões de semântica...
+thead{
+    height: 0px;
+    transform: scale(0);
+}
+
+tbody{
+    display: flex;
+    flex-direction: column;
+}
+
+tbody td{
     height: 120px;
     padding-top: 10px;
     padding-bottom: 10px;
 }
 
-#tabela-consulta tr:hover{
+tbody tr:hover{
     cursor: pointer;
     text-decoration: underline;
 }
 
-#tabela-consulta tr td:first-child{
+tbody tr td:first-child{
     width: 150px;
 }
 
-#tabela-consulta tr td:nth-child(2){
+tbody tr td:nth-child(2){
     text-align: justify;
     padding-right: 10px;
 
 }
 
-#tabela-consulta tr:nth-child(odd){
+tbody tr:nth-child(odd){
     color: #555f42;
 }
 
-#tabela-consulta tr:nth-child(even){
+tbody tr:nth-child(even){
     color: #77713c;
     background-color: #fcf6c3;
 }
 
-#tabela-consulta img{
+tbody img{
     max-height: 100px;
     max-width: 100px;
 }
@@ -166,6 +172,10 @@ body{
     max-height: 150px;
     max-width: 150px;
     margin: 5px;
+}
+
+#id01{
+    display: none;
 }
 
 @media (max-width: 575.98px) {
