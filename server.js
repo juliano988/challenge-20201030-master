@@ -23,7 +23,7 @@ db.once('open', function () {
         image_url: String
     });
 
-    const AlimentosNovo = mongoose.model('Alimentos-novo', alimentosSchema);
+    const Alimentos = mongoose.model('alimentos', alimentosSchema);
 
     app.use(express.static('public'));
 
@@ -36,11 +36,11 @@ db.once('open', function () {
 
     app.put('/products/:code', function (req, res) {
         if (req.query.product_name || req.query.quantity || req.query.categories || req.query.packaging || req.query.brands || req.query.image_url) {
-            AlimentosNovo.findOne({ code: req.params.code }, function (err, data) {
+            Alimentos.findOne({ code: req.params.code }, function (err, data) {
                 if (err) { return console.log(err) };
                 if (data) {
                     const dadoAntigo = data;
-                    AlimentosNovo.findOneAndUpdate({ code: req.params.code }, {
+                    Alimentos.findOneAndUpdate({ code: req.params.code }, {
                         product_name: req.query.product_name || dadoAntigo.product_name,
                         quantity: req.query.quantity || dadoAntigo.quantity,
                         categories: req.query.categories || dadoAntigo.categories,
@@ -61,7 +61,7 @@ db.once('open', function () {
     });
 
     app.delete('/products/:code', function (req, res) {
-        AlimentosNovo.findOneAndUpdate({ code: req.params.code }, {
+        Alimentos.findOneAndUpdate({ code: req.params.code }, {
             status: 'trash'
         }, { new: true }).select('-_id').exec(function (err, data) {
             if (err) { return console.log(err) };
@@ -74,7 +74,7 @@ db.once('open', function () {
     });
 
     app.get('/products/:code', function (req, res) {
-        AlimentosNovo.findOne({ code: req.params.code }).select('-_id').exec(function (err, data) {
+        Alimentos.findOne({ code: req.params.code }).select('-_id').exec(function (err, data) {
             if (err) { return console.log(err) };
             if (data) {
                 res.json(data);
@@ -89,16 +89,16 @@ db.once('open', function () {
             const pagina = req.query.p;
             const resultadosPorPagina = 20;
             let qDocumentos;
-            AlimentosNovo.countDocuments({}, function (err, data) {
+            Alimentos.countDocuments({}, function (err, data) {
                 if (err) { return console.log(err) };
                 qDocumentos = data;
-                AlimentosNovo.find({}).skip((pagina - 1) * resultadosPorPagina).limit(resultadosPorPagina).select('-_id').exec(function (err, data) {
+                Alimentos.find({}).skip((pagina - 1) * resultadosPorPagina).limit(resultadosPorPagina).select('-_id').exec(function (err, data) {
                     if (err) { return console.log(err) };
                     res.json({ pagina_atual: pagina, total_paginas: Math.ceil(qDocumentos / resultadosPorPagina), q_resultados: data.length, resultados: data });
                 });
             });
         } else {
-            AlimentosNovo.find({}).select('-_id').exec(function (err, data) {
+            Alimentos.find({}).select('-_id').exec(function (err, data) {
                 if (err) { return console.log(err) };
                 res.json(data);
             });

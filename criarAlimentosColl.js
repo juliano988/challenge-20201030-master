@@ -38,7 +38,7 @@ db.once('open', function () {
 
     //Processo é executado a cada 5min
     let numDaExecução = 1;
-    cron.schedule('*/'+intervaloEntreExecuçõesMin+' * * * *', () => {
+    cron.schedule('*/' + intervaloEntreExecuçõesMin + ' * * * *', () => {
         console.clear();
         if (numDaExecução <= numDeExecuções) {
             console.log(new Date() + ' - Execução ' + numDaExecução + '/' + numDeExecuções);
@@ -46,6 +46,7 @@ db.once('open', function () {
             Alimentos.find({}).select('code product_name quantity categories packaging brands images barcode status imported_t url image_url').skip((numDaExecução++ - 1) * docsExecutadosporVez).limit(docsExecutadosporVez).exec(function (err, data) {
                 if (err) { return console.log(err) };
                 const alimentosSelecionados = data;
+                console.log('Documentos encontrados: ' + alimentosSelecionados.length);
                 for (const i in alimentosSelecionados) {
                     let imageLink;
                     // Estrutura try catch necessária nos casos onde o alimento não possui imagem.
@@ -53,7 +54,7 @@ db.once('open', function () {
                         //if necessário no caso do codigo ser executado mais de uma vez consecutiva.
                         if (alimentosSelecionados[Number(i)].image_url) {
                             imageLink = alimentosSelecionados[Number(i)].image_url
-                        }else{
+                        } else {
                             imageLink = "https://static.openfoodfacts.org/images/products/" + alimentosSelecionados[Number(i)].code.substring(0, 3) + '/' + alimentosSelecionados[Number(i)].code.substring(3, 6) + '/' + alimentosSelecionados[Number(i)].code.substring(6, 9) + '/' + alimentosSelecionados[Number(i)].code.substring(9) + '/' + Object.getOwnPropertyNames(alimentosSelecionados[Number(i)].get('images')).find(function (val) { return (/front_/).test(val) }) + '.' + alimentosSelecionados[Number(i)].get('images')[Object.getOwnPropertyNames(alimentosSelecionados[Number(i)].get('images')).find(function (val) { return (/front_/).test(val) })].rev + '.200.jpg';
                         }
                     } catch (error) {
@@ -63,8 +64,8 @@ db.once('open', function () {
                         {
                             code: alimentosSelecionados[Number(i)].code,
                             barcode: Number(alimentosSelecionados[Number(i)].code).toString(10).length === 13 ? alimentosSelecionados[Number(i)].code + "(EAN / EAN-13)" : alimentosSelecionados[Number(i)].code + "(EAN / EAN-13) " + alimentosSelecionados[Number(i)].code.substring(1) + "(UPC / UPC-A)",
-                            status: "published",
-                            imported_t: new Date(),
+                            status: alimentosSelecionados[Number(i)].status || "published",
+                            imported_t: alimentosSelecionados[Number(i)].imported_t || new Date(),
                             url: "https://world.openfoodfacts.org/product/" + alimentosSelecionados[Number(i)].code,
                             product_name: alimentosSelecionados[Number(i)].product_name,
                             quantity: alimentosSelecionados[Number(i)].quantity,
