@@ -78,7 +78,7 @@ db.once('open', function () {
                             console.log('Alimento atualizado: ' + alimentosSelecionados[Number(i)].code, alimentosSelecionados[Number(i)].product_name);
                         });
                 };
-            })
+            });
         } else {
             console.log(new Date() + ' - Número de execuções necessárias foi alcançado');
         }

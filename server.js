@@ -36,27 +36,23 @@ db.once('open', function () {
 
     app.put('/products/:code', function (req, res) {
         if (req.query.product_name || req.query.quantity || req.query.categories || req.query.packaging || req.query.brands || req.query.image_url) {
-            Alimentos.findOne({ code: req.params.code }, function (err, data) {
+            Alimentos.findOneAndUpdate({ code: req.params.code }, {
+                product_name: req.query.product_name,
+                quantity: req.query.quantity,
+                categories: req.query.categories,
+                packaging: req.query.packaging,
+                brands: req.query.brands,
+                image_url: req.query.image_url
+            }, { new: true, omitUndefined: true }).select('-_id').exec(function (err, data) {
                 if (err) { return console.log(err) };
                 if (data) {
-                    const dadoAntigo = data;
-                    Alimentos.findOneAndUpdate({ code: req.params.code }, {
-                        product_name: req.query.product_name || dadoAntigo.product_name,
-                        quantity: req.query.quantity || dadoAntigo.quantity,
-                        categories: req.query.categories || dadoAntigo.categories,
-                        packaging: req.query.packaging || dadoAntigo.packaging,
-                        brands: req.query.brands || dadoAntigo.brands,
-                        image_url: req.query.image_url || dadoAntigo.image_url
-                    }, { new: true }).select('-_id').exec(function (err, data) {
-                        if (err) { return console.log(err) };
-                        res.json({ mensagem: "Dados atualizados com sucesso!", alimento_atualizado: data })
-                    });
+                    res.status(200).json({ mensagem: "Dados atualizados com sucesso!", alimento_atualizado: data });
                 } else {
-                    res.json('Produto não encontrado ou código incorreto');
-                };
+                    res.status(400).json('Produto não encontrado ou código incorreto');
+                }
             });
         } else {
-            res.json('Nenhum parâmetro foi inserido para atualização ou parâmetro inserido é invalido.');
+            res.status(406).json('Nenhum parâmetro foi inserido para atualização ou parâmetro inserido é invalido.');
         };
     });
 
@@ -66,9 +62,9 @@ db.once('open', function () {
         }, { new: true }).select('-_id').exec(function (err, data) {
             if (err) { return console.log(err) };
             if (data) {
-                res.json({ mensagem: "Status do alimento alterado com sucesso!", alimento_atualizado: data })
+                res.status(200).json({ mensagem: "Status do alimento alterado com sucesso!", alimento_atualizado: data })
             } else {
-                res.json('Produto não encontrado ou código incorreto');
+                res.status(400).json('Produto não encontrado ou código incorreto');
             }
         });
     });
@@ -77,15 +73,15 @@ db.once('open', function () {
         Alimentos.findOne({ code: req.params.code }).select('-_id').exec(function (err, data) {
             if (err) { return console.log(err) };
             if (data) {
-                res.json(data);
+                res.status(200).json(data);
             } else {
-                res.json('Produto não encontrado ou código incorreto')
+                res.status(400).json('Produto não encontrado ou código incorreto')
             }
         });
     });
 
     app.get('/products', function (req, res) {
-        if (req.query.p) {
+        if (Number(req.query.p)) {
             const pagina = req.query.p;
             const resultadosPorPagina = 20;
             let qDocumentos;
@@ -94,14 +90,22 @@ db.once('open', function () {
                 qDocumentos = data;
                 Alimentos.find({}).skip((pagina - 1) * resultadosPorPagina).limit(resultadosPorPagina).select('-_id').exec(function (err, data) {
                     if (err) { return console.log(err) };
-                    res.json({ pagina_atual: pagina, total_paginas: Math.ceil(qDocumentos / resultadosPorPagina), q_resultados: data.length, resultados: data });
+                    if (data.length) {
+                        res.status(200).json({ pagina_atual: pagina, total_paginas: Math.ceil(qDocumentos / resultadosPorPagina), q_resultados: data.length, resultados: data });
+                    } else {
+                        res.status(406).json('Número da página solicitada está incoreto ou não existe.');
+                    }
                 });
             });
         } else {
-            Alimentos.find({}).select('-_id').exec(function (err, data) {
-                if (err) { return console.log(err) };
-                res.json(data);
-            });
+            if (req.query.p) {
+                res.status(406).json('Número da página solicitada está incoreto ou não existe.');
+            } else {
+                Alimentos.find({}).select('-_id').exec(function (err, data) {
+                    if (err) { return console.log(err) };
+                    res.status(200).json(data);
+                });
+            }
         };
     });
 
