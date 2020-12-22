@@ -22,10 +22,14 @@
   "homepage": "https://github.com/juliano988/challenge-20201030-master#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "del": "^6.0.0",
     "dotenv": "^8.2.0",
+    "download": "^8.0.0",
     "express": "^4.17.1",
+    "gunzip-file": "^0.1.1",
     "mongoose": "^5.11.4",
-    "node-cron": "^2.0.3"
+    "node-cron": "^2.0.3",
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
