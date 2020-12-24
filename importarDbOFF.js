@@ -1,3 +1,4 @@
+require('dotenv').config();
 const fetch = require('node-fetch');
 const download = require('download');
 const gunzip = require('gunzip-file');
@@ -5,7 +6,7 @@ const { execFile } = require('child_process');
 const del = require('del');
 
 //Constantes:
-const uri = '--uri ' + 'mongodb+srv://julio123:julio123@cluster0.ab00a.mongodb.net/Nata_House_Desafio';
+const uri = '--uri ' + process.env.URI.substring(0,process.env.URI.indexOf('?'));
 const collection = '--collection alimentos';
 const type = '--type json';
 const file = '--file ' + __dirname + '\\arquivosOFF\\';
@@ -17,8 +18,7 @@ module.exports = function importarDbOFF() {
         })
         .then(function (text) {
             // text is the response body
-            //Slice inserido apenas para fins de teste para evitar ocupar o limite de espaço maxímo no bando de dados.
-            const nomeArquivos = text.trim().split(/\s/)//.slice(0,10);
+            const nomeArquivos = text.trim().split(/\s/);
             console.log('Arquivos para download: ' + nomeArquivos.length);
 
             (async () => {

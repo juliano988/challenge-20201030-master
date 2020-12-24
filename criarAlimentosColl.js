@@ -1,14 +1,13 @@
+require('dotenv').config();
 const cron = require('node-cron');
 const importarDbOFF = require('./importarDbOFF.js');
 
 //Constantes
-const numDeExecuções = 10;
-const docsExecutadosporVez = 5000;
-const intervaloEntreExecuçõesMin = 5;
+const numDeExecuções = Number(process.env.NUM_DE_EXECUCOES);
+const docsExecutadosporVez = Number(process.env.DOCS_EXECUTADOS_POR_VEZ);
+const intervaloEntreExecuçõesMin = Number(process.env.INTERVALO_ENTRE_EXECUCOES_MIN);
+const URI_DB = process.env.URI;
 
-const URI_DB = "mongodb+srv://julio123:julio123@cluster0.ab00a.mongodb.net/Nata_House_Desafio?retryWrites=true&w=majority";
-
-require('dotenv').config();
 const mongoose = require('mongoose');
 mongoose.connect(URI_DB, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -33,7 +32,7 @@ db.once('open', function () {
     const Alimentos = mongoose.model('alimentos', alimentosSchema);
 
     // É iniciado às 0h o processo de importação da base de ddos do OFF para a base de dados da API.
-    cron.schedule('27 17 * * *', () => {
+    cron.schedule('* 0 * * *', () => {
         console.clear();
 
         console.log('Importando dados do OFF para o bando de dados da API.');
@@ -43,7 +42,7 @@ db.once('open', function () {
     let numDaExecução = Infinity;
 
     // É iniciado às 1h o processo de formatação da base de dados da API
-    cron.schedule('59 17 * * *', () => {
+    cron.schedule('* 1 * * *', () => {
         console.clear();
 
         numDaExecução = 0;
@@ -79,12 +78,7 @@ db.once('open', function () {
                         let imageLink;
                         // Estrutura try catch necessária nos casos onde o alimento não possui imagem.
                         try {
-                            //if necessário no caso do codigo ser executado mais de uma vez consecutiva.
-                            if (alimentosSelecionados[Number(i)].image_url) {
-                                imageLink = alimentosSelecionados[Number(i)].image_url
-                            } else {
-                                imageLink = "https://static.openfoodfacts.org/images/products/" + alimentosSelecionados[Number(i)].code.substring(0, 3) + '/' + alimentosSelecionados[Number(i)].code.substring(3, 6) + '/' + alimentosSelecionados[Number(i)].code.substring(6, 9) + '/' + alimentosSelecionados[Number(i)].code.substring(9) + '/' + Object.getOwnPropertyNames(alimentosSelecionados[Number(i)].get('images')).find(function (val) { return (/front_/).test(val) }) + '.' + alimentosSelecionados[Number(i)].get('images')[Object.getOwnPropertyNames(alimentosSelecionados[Number(i)].get('images')).find(function (val) { return (/front_/).test(val) })].rev + '.200.jpg';
-                            }
+                            imageLink = "https://static.openfoodfacts.org/images/products/" + alimentosSelecionados[Number(i)].code.substring(0, 3) + '/' + alimentosSelecionados[Number(i)].code.substring(3, 6) + '/' + alimentosSelecionados[Number(i)].code.substring(6, 9) + '/' + alimentosSelecionados[Number(i)].code.substring(9) + '/' + Object.getOwnPropertyNames(alimentosSelecionados[Number(i)].get('images')).find(function (val) { return (/front_/).test(val) }) + '.' + alimentosSelecionados[Number(i)].get('images')[Object.getOwnPropertyNames(alimentosSelecionados[Number(i)].get('images')).find(function (val) { return (/front_/).test(val) })].rev + '.200.jpg';
                         } catch (error) {
                             imageLink = '/img_not_found.png';
                         }
@@ -92,8 +86,8 @@ db.once('open', function () {
                             {
                                 code: alimentosSelecionados[Number(i)].code,
                                 barcode: Number(alimentosSelecionados[Number(i)].code).toString(10).length === 13 ? alimentosSelecionados[Number(i)].code + "(EAN / EAN-13)" : alimentosSelecionados[Number(i)].code + "(EAN / EAN-13) " + alimentosSelecionados[Number(i)].code.substring(1) + "(UPC / UPC-A)",
-                                status: alimentosSelecionados[Number(i)].status || "published",
-                                imported_t: alimentosSelecionados[Number(i)].imported_t || new Date(),
+                                status: "published",
+                                imported_t: new Date(),
                                 url: "https://world.openfoodfacts.org/product/" + alimentosSelecionados[Number(i)].code,
                                 product_name: alimentosSelecionados[Number(i)].product_name,
                                 quantity: alimentosSelecionados[Number(i)].quantity,
@@ -101,7 +95,7 @@ db.once('open', function () {
                                 packaging: alimentosSelecionados[Number(i)].packaging,
                                 brands: alimentosSelecionados[Number(i)].brands,
                                 image_url: imageLink
-                            }, function (err, data) {
+                            }, { omitUndefined: true }, function (err, data) {
                                 if (err) { return console.log(err) };
                                 console.log('Alimento atualizado: ' + alimentosSelecionados[Number(i)].code, alimentosSelecionados[Number(i)].product_name);
                             });
