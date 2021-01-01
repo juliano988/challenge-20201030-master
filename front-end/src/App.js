@@ -13,7 +13,7 @@ class App extends React.Component {
       resultados: [],
       pagSelecionada: '',
       alimentoSelecionado: [],
-      dominio: 'https://challenge-20201030-master.juliano988.repl.co'
+      dominio: 'https://challenge-20201030-master-1.juliano988.repl.co'
     };
 
     this.loadingDivRef = React.createRef();
