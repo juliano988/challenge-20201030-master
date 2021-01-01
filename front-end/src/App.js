@@ -12,7 +12,8 @@ class App extends React.Component {
       qResultados: 0,
       resultados: [],
       pagSelecionada: '',
-      alimentoSelecionado: []
+      alimentoSelecionado: [],
+      dominio: 'https://challenge-20201030-master.juliano988.repl.co'
     };
 
     this.loadingDivRef = React.createRef();
@@ -20,7 +21,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    fetch('http://localhost:8080/products/?p=1')
+    fetch(this.state.dominio + '/products/?p=1')
       .then(res => res.json())
       .then(
         (result) => {
@@ -55,7 +56,7 @@ class App extends React.Component {
 
   handleClickBusca() {
     this.loadingDivRef.current.setAttribute('style', 'display: flex')
-    fetch('http://localhost:8080/products/?p=' + this.state.pagSelecionada)
+    fetch(this.state.dominio + '/products/?p=' + this.state.pagSelecionada)
       .then(res => res.json())
       .then(
         (result) => {
